@@ -1,16 +1,16 @@
 //promise
-/*const asyncHandler = (requestHandler) => {
-  (req, res, next) => {
+const asyncHandler = (requestHandler) => {
+  return (req, res, next) => {
     Promise.resolve(requestHandler(req, res, next)).catch((error) =>
       next(error)
     );
   };
-};*/
+};
 
 //export { asyncHandler };
 
-//try/catch
-const asyncHandler = (fn) => async (req, res, next) => {
+//trycatch
+/*const asyncHandler = (fn) => async (req, res, next) => {
   try {
     await fn(req, res, next);
   } catch (error) {
@@ -19,6 +19,6 @@ const asyncHandler = (fn) => async (req, res, next) => {
       message: error.message,
     });
   }
-};
+};*/
 
 export { asyncHandler };
