@@ -24,7 +24,7 @@ const userSchema = new Schema(
       type: String, //use cloudinary for url
       required: true,
     },
-    coverImage: { type: String, required: true },
+    coverImage: { type: String },
     password: { type: String, required: [true, "password is required"] },
     refreshToken: { type: String },
     watchHistory: [{ type: Schema.Types.ObjectId, ref: "Video" }],
