@@ -141,8 +141,8 @@ const logoutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
     req.user._id,
     {
-      $set: {
-        refreshToken: undefined,
+      $unset: {
+        refreshToken: 1,
       },
     },
     {
@@ -286,6 +286,7 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
 const getUserChannelProfile = asyncHandler(
   asyncHandler(async (req, res) => {
     const { userName } = req.params;
+    console.log(userName);
     if (!userName?.trim()) {
       throw new ApiError(400, "Username is missing");
     }
@@ -358,7 +359,9 @@ const getUserChannelProfile = asyncHandler(
 const getWatchHistory = asyncHandler(async (req, res) => {
   const user = await User.aggregate([
     {
-      $match: { _id: new mongoose.Schema.Types.ObjectId(req.user._id) },
+      $match: {
+        _id: req.user._id,
+      },
     },
     {
       $lookup: {
@@ -377,7 +380,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
                 {
                   $project: {
                     fullName: 1,
-                    userName: 1,
+                    username: 1,
                     avatar: 1,
                   },
                 },
@@ -394,16 +397,18 @@ const getWatchHistory = asyncHandler(async (req, res) => {
         ],
       },
     },
+    {
+      $project: {
+        userName: 1,
+        watchHistory: 1,
+        _id: 1,
+      },
+    },
   ]);
+  console.log(user);
   return res
     .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        user[0].watchHistory,
-        "User Watch details fetched successfully"
-      )
-    );
+    .json(new ApiResponse(200, user[0], "Watch history fetched successfully"));
 });
 
 export {
